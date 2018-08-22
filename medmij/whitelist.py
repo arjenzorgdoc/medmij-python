@@ -1,11 +1,17 @@
 import pkg_resources
+from lxml import etree
+
 
 class Whitelist:
-    @staticmethod
-    def get_xsd():
-        return pkg_resources.resource_string(__name__, "whitelist.xsd")
+    _xsd = None
 
-    def __init__(self, xml):
+    @classmethod
+    def get_xsd(cls):
+        if cls._xsd is None:
+            data = pkg_resources.resource_string(__name__, "whitelist.xsd")
+            cls._xsd = etree.XML(data)
+        return cls._xsd
+
+    def __init__(self, xmldata):
         xsd = self.get_xsd()
-        
-        
+        xml = etree.XML(xmldata)
