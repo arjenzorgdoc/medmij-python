@@ -8,7 +8,7 @@ import medmij
 from . import testdata
 
 
-def string_urlopen(response_string):
+def string_urlopen(response_string) -> Any:
     response = MagicMock()
     response.__enter__.return_value = response
     response.getcode.return_value = 200

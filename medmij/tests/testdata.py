@@ -1,9 +1,8 @@
 """Testdata"""
-
 import pkg_resources
 
 
-def _load(name):
+def _load(name: str) -> bytes:
     return pkg_resources.resource_string(__name__, name)
 
 
