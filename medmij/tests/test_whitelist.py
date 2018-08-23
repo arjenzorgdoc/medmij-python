@@ -1,3 +1,5 @@
+# pylint: skip-file
+
 from unittest import TestCase
 from unittest.mock import patch, MagicMock
 import lxml
@@ -6,33 +8,33 @@ import medmij
 from . import testdata
 
 
-def string_urlopen(s):
-    cm = MagicMock()
-    cm.getcode.return_value = 200
-    cm.read.return_value = s
-    cm.__enter__.return_value = cm
-    return cm
+def string_urlopen(response_string):
+    response = MagicMock()
+    response.__enter__.return_value = response
+    response.getcode.return_value = 200
+    response.read.return_value = response_string
+    return response
 
 
 class TestWhitelist(TestCase):
     def test_parse_ok(self):
-        for xml in (testdata.whitelist_example_xml,
-                    testdata.whitelist_example_single_xml):
-            w = medmij.Whitelist(xml)
-            self.assertTrue(isinstance(w, medmij.Whitelist))
+        for xml in (testdata.WHITELIST_EXAMPLE_XML,
+                    testdata.WHITELIST_EXAMPLE_SINGLE_XML):
+            whitelist = medmij.Whitelist(xml)
+            self.assertTrue(isinstance(whitelist, medmij.Whitelist))
 
     def test_parse_invalid_xml(self):
         with self.assertRaises(lxml.etree.XMLSyntaxError):
             medmij.Whitelist('<kapot')
 
     def test_parse_xsd_fail(self):
-        for xml in (testdata.whitelist_xsd_fail1,
-                    testdata.whitelist_xsd_fail2):
+        for xml in (testdata.WHITELIST_XSD_FAIL1,
+                    testdata.WHITELIST_XSD_FAIL2):
             with self.assertRaises(lxml.etree.XMLSyntaxError):
                 medmij.Whitelist(xml)
 
     def test_whitelist_contains(self):
-        whitelist = medmij.Whitelist(testdata.whitelist_example_xml)
+        whitelist = medmij.Whitelist(testdata.WHITELIST_EXAMPLE_XML)
         self.assertIn("rcf-rso.nl", whitelist)
         self.assertNotIn("rcf-rso.nl.", whitelist)
         self.assertNotIn("RFC-RSO.NL", whitelist)
@@ -42,7 +44,7 @@ class TestWhitelist(TestCase):
     @patch('urllib.request.urlopen')
     def test_whitelist_download(self, mock_urlopen):
         mock_urlopen.return_value = string_urlopen(
-            testdata.whitelist_example_xml)
+            testdata.WHITELIST_EXAMPLE_XML)
         url = "https://example.com/MedMij_Whitelist_example.xml"
-        w = medmij.Whitelist.from_url(url)
-        self.assertIsInstance(w, medmij.Whitelist)
+        whitelist = medmij.Whitelist.from_url(url)
+        self.assertIsInstance(whitelist, medmij.Whitelist)
