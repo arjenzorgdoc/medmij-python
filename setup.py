@@ -7,4 +7,5 @@ setup(
     zip_safe=True,
     test_suite='nose.collector',
     tests_require=['nose'],
+    python_require=">=3.7",
 )

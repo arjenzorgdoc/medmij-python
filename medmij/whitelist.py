@@ -7,9 +7,18 @@ from typing import AnyStr, Set, Optional
 import pkg_resources
 from lxml import etree
 
+
 class Whitelist:
     """
     Een whitelist zoals beschreven op https://afsprakenstelsel.medmij.nl/
+
+
+    >>> import medmij.tests.testdata
+    >>> w = Whitelist(medmij.tests.testdata.WHITELIST_EXAMPLE_XML)
+    >>> "rcf-rso.nl" in w
+    True
+    >>> "taart" in w
+    False
     """
     NS = "xmlns://afsprakenstelsel.medmij.nl/whitelist/release2/"
     _parser: Optional[etree.XMLParser] = None
@@ -39,7 +48,8 @@ class Whitelist:
 
     @classmethod
     def from_url(cls, url: str) -> Whitelist:
-        """Initialiseert een Whitelist vanuit een URL. Downloadt de lijst, parset en valideert deze.
+        """Initialiseert een Whitelist vanuit een URL.
+        Downloadt de lijst, parset en valideert deze.
         """
         with urllib.request.urlopen(url) as response:
             xmldata = response.read()
