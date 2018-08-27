@@ -8,4 +8,5 @@ setup(
     test_suite='nose.collector',
     tests_require=['nose'],
     python_require=">=3.7",
+    package_data={'medmij': ['*.xsd']}
 )
